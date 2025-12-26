@@ -60,58 +60,58 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 ### Backend Containerization (User Story 1)
 
-- [ ] T010 [P] [US1] Create multi-stage Dockerfile for backend in dockerfiles/backend.Dockerfile
-- [ ] T011 [US1] Configure backend Dockerfile with Python 3.13-slim base image
-- [ ] T012 [US1] Add builder stage with uv dependency installation in dockerfiles/backend.Dockerfile
-- [ ] T013 [US1] Add runtime stage copying .venv and application code in dockerfiles/backend.Dockerfile
-- [ ] T014 [US1] Set CMD to uvicorn main:app --host 0.0.0.0 --port 8000 in dockerfiles/backend.Dockerfile
-- [ ] T015 [US1] Build backend image and validate size < 200MB
+- [x] T010 [P] [US1] Create multi-stage Dockerfile for backend in dockerfiles/backend.Dockerfile
+- [x] T011 [US1] Configure backend Dockerfile with Python 3.13-slim base image
+- [x] T012 [US1] Add builder stage with uv dependency installation in dockerfiles/backend.Dockerfile
+- [x] T013 [US1] Add runtime stage copying .venv and application code in dockerfiles/backend.Dockerfile
+- [x] T014 [US1] Set CMD to uvicorn main:app --host 0.0.0.0 --port 8000 in dockerfiles/backend.Dockerfile
+- [x] T015 [US1] Build backend image and validate size < 200MB
 
 ### Backend Helm Chart (User Story 1)
 
-- [ ] T016 [P] [US1] Create charts/ai-todo-backend directory structure
-- [ ] T017 [P] [US1] Create charts/ai-todo-backend/Chart.yaml with version 1.0.0
-- [ ] T018 [P] [US1] Create charts/ai-todo-backend/values.yaml per contracts/helm-charts.md
-- [ ] T019 [P] [US1] Create charts/ai-todo-backend/templates/deployment.yaml per contracts/kubernetes-resources.md
-- [ ] T020 [P] [US1] Create charts/ai-todo-backend/templates/service.yaml for NodePort 30081
-- [ ] T021 [P] [US1] Create charts/ai-todo-backend/templates/configmap.yaml for non-sensitive config
-- [ ] T022 [P] [US1] Create charts/ai-todo-backend/templates/secret.yaml template for sensitive config
-- [ ] T023 [US1] Add liveness probe configuration (GET /health) in charts/ai-todo-backend/templates/deployment.yaml
-- [ ] T024 [US1] Add readiness probe configuration (GET /ready) in charts/ai-todo-backend/templates/deployment.yaml
-- [ ] T025 [US1] Add resource limits (500m CPU, 512Mi memory) in charts/ai-todo-backend/templates/deployment.yaml
-- [ ] T026 [US1] Add RollingUpdate strategy with maxSurge=1, maxUnavailable=0 in charts/ai-todo-backend/templates/deployment.yaml
-- [ ] T027 [US1] Create charts/ai-todo-backend/README.md with installation instructions
-- [ ] T028 [US1] Run helm lint ./charts/ai-todo-backend and fix all errors
+- [x] T016 [P] [US1] Create charts/ai-todo-backend directory structure
+- [x] T017 [P] [US1] Create charts/ai-todo-backend/Chart.yaml with version 1.0.0
+- [x] T018 [P] [US1] Create charts/ai-todo-backend/values.yaml per contracts/helm-charts.md
+- [x] T019 [P] [US1] Create charts/ai-todo-backend/templates/deployment.yaml per contracts/kubernetes-resources.md
+- [x] T020 [P] [US1] Create charts/ai-todo-backend/templates/service.yaml for NodePort 30081
+- [x] T021 [P] [US1] Create charts/ai-todo-backend/templates/configmap.yaml for non-sensitive config
+- [x] T022 [P] [US1] Create charts/ai-todo-backend/templates/secret.yaml template for sensitive config
+- [x] T023 [US1] Add liveness probe configuration (GET /health) in charts/ai-todo-backend/templates/deployment.yaml
+- [x] T024 [US1] Add readiness probe configuration (GET /ready) in charts/ai-todo-backend/templates/deployment.yaml
+- [x] T025 [US1] Add resource limits (500m CPU, 512Mi memory) in charts/ai-todo-backend/templates/deployment.yaml
+- [x] T026 [US1] Add RollingUpdate strategy with maxSurge=1, maxUnavailable=0 in charts/ai-todo-backend/templates/deployment.yaml
+- [x] T027 [US1] Create charts/ai-todo-backend/README.md with installation instructions
+- [x] T028 [US1] Run helm lint ./charts/ai-todo-backend and fix all errors
 
 ### Frontend Containerization (User Story 1)
 
-- [ ] T029 [P] [US1] Create multi-stage Dockerfile for frontend in dockerfiles/frontend.Dockerfile
-- [ ] T030 [US1] Add dependencies stage with npm ci in dockerfiles/frontend.Dockerfile
-- [ ] T031 [US1] Add builder stage with npm run build in dockerfiles/frontend.Dockerfile
-- [ ] T032 [US1] Add runtime stage copying .next and node_modules in dockerfiles/frontend.Dockerfile
-- [ ] T033 [US1] Set CMD to npm start in dockerfiles/frontend.Dockerfile
-- [ ] T034 [US1] Build frontend image and validate size < 200MB
+- [x] T029 [P] [US1] Create multi-stage Dockerfile for frontend in dockerfiles/frontend.Dockerfile
+- [x] T030 [US1] Add dependencies stage with npm ci in dockerfiles/frontend.Dockerfile
+- [x] T031 [US1] Add builder stage with npm run build in dockerfiles/frontend.Dockerfile
+- [x] T032 [US1] Add runtime stage copying .next and node_modules in dockerfiles/frontend.Dockerfile
+- [x] T033 [US1] Set CMD to npm start in dockerfiles/frontend.Dockerfile
+- [x] T034 [US1] Build frontend image and validate size < 200MB
 
 ### Frontend Helm Chart (User Story 1)
 
-- [ ] T035 [P] [US1] Create charts/ai-todo-frontend directory structure
-- [ ] T036 [P] [US1] Create charts/ai-todo-frontend/Chart.yaml with version 1.0.0
-- [ ] T037 [P] [US1] Create charts/ai-todo-frontend/values.yaml per contracts/helm-charts.md
-- [ ] T038 [P] [US1] Create charts/ai-todo-frontend/templates/deployment.yaml per contracts/kubernetes-resources.md
-- [ ] T039 [P] [US1] Create charts/ai-todo-frontend/templates/service.yaml for NodePort 30080
-- [ ] T040 [P] [US1] Create charts/ai-todo-frontend/templates/configmap.yaml for frontend config
-- [ ] T041 [P] [US1] Create charts/ai-todo-frontend/templates/secret.yaml template for Better Auth secret
-- [ ] T042 [US1] Add resource limits (500m CPU, 512Mi memory) in charts/ai-todo-frontend/templates/deployment.yaml
-- [ ] T043 [US1] Create charts/ai-todo-frontend/README.md with installation instructions
-- [ ] T044 [US1] Run helm lint ./charts/ai-todo-frontend and fix all errors
+- [x] T035 [P] [US1] Create charts/ai-todo-frontend directory structure
+- [x] T036 [P] [US1] Create charts/ai-todo-frontend/Chart.yaml with version 1.0.0
+- [x] T037 [P] [US1] Create charts/ai-todo-frontend/values.yaml per contracts/helm-charts.md
+- [x] T038 [P] [US1] Create charts/ai-todo-frontend/templates/deployment.yaml per contracts/kubernetes-resources.md
+- [x] T039 [P] [US1] Create charts/ai-todo-frontend/templates/service.yaml for NodePort 30080
+- [x] T040 [P] [US1] Create charts/ai-todo-frontend/templates/configmap.yaml for frontend config
+- [x] T041 [P] [US1] Create charts/ai-todo-frontend/templates/secret.yaml template for Better Auth secret
+- [x] T042 [US1] Add resource limits (500m CPU, 512Mi memory) in charts/ai-todo-frontend/templates/deployment.yaml
+- [x] T043 [US1] Create charts/ai-todo-frontend/README.md with installation instructions
+- [x] T044 [US1] Run helm lint ./charts/ai-todo-frontend and fix all errors
 
 ### Deployment Automation (User Story 1)
 
-- [ ] T045 [P] [US1] Create deployment/build-images.sh to build all Docker images
-- [ ] T046 [P] [US1] Create deployment/load-images.sh to load images into Minikube
-- [ ] T047 [P] [US1] Create deployment/deploy.sh with helm install commands for backend and frontend
-- [ ] T048 [P] [US1] Create deployment/validate.sh to check pod status and run helm lint
-- [ ] T049 [US1] Make all deployment scripts executable (chmod +x)
+- [x] T045 [P] [US1] Create deployment/build-images.sh to build all Docker images
+- [x] T046 [P] [US1] Create deployment/load-images.sh to load images into Minikube
+- [x] T047 [P] [US1] Create deployment/deploy.sh with helm install commands for backend and frontend
+- [x] T048 [P] [US1] Create deployment/validate.sh to check pod status and run helm lint
+- [x] T049 [US1] Make all deployment scripts executable (chmod +x)
 - [ ] T050 [US1] Test full deployment workflow: minikube-setup.sh → build-images.sh → load-images.sh → deploy.sh
 - [ ] T051 [US1] Verify backend accessible at http://$(minikube ip):30081/health
 - [ ] T052 [US1] Verify frontend accessible at http://$(minikube ip):30080

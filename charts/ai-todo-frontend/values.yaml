@@ -1,0 +1,30 @@
+# Default values for ai-todo-frontend Helm chart
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ai-todo-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 3000
+  nodePort: 30080
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Environment variables (override with --set or values file)
+env:
+  NEXT_PUBLIC_API_URL: "http://192.168.49.2:30081"
+  BETTER_AUTH_SECRET: ""
+  BETTER_AUTH_URL: "http://localhost:30080"
+  DATABASE_URL: ""

@@ -1,0 +1,59 @@
+# Default values for ai-todo-backend Helm chart
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ai-todo-backend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8000
+  nodePort: 30081
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Environment variables (override with --set or values file)
+env:
+  DATABASE_URL: ""
+  OPENAI_API_KEY: ""
+  MCP_SERVER_URL: "http://ai-todo-mcp-service:8001"
+  BETTER_AUTH_SECRET: ""
+  BETTER_AUTH_ISSUER: "http://ai-todo-frontend-service:3000"
+  BETTER_AUTH_JWKS_URL: "http://ai-todo-frontend-service:3000/api/auth/jwks"
+
+# Liveness probe configuration
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Readiness probe configuration
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Rolling update strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
