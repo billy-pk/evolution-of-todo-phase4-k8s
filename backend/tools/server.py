@@ -666,3 +666,31 @@ def delete_task_tool(user_id: str, task_id: str) -> dict:
         Dict with status and deletion confirmation
     """
     return delete_task(user_id, task_id)
+
+
+# T008: Health check endpoint for Kubernetes liveness probe
+@mcp.tool()
+def health_check() -> dict:
+    """Health check endpoint for MCP Server.
+
+    Returns:
+        Dict with server status and database connectivity
+    """
+    try:
+        # Test database connection
+        with Session(engine) as session:
+            from sqlmodel import text
+            result = session.exec(text("SELECT 1"))
+            result.fetchone()
+
+        return {
+            "status": "healthy",
+            "server": "TaskMCPServer",
+            "database": "connected"
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "server": "TaskMCPServer",
+            "database": f"error: {str(e)}"
+        }

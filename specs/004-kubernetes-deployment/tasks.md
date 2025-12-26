@@ -43,10 +43,10 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 **⚠️ CRITICAL**: All services need health endpoints before containerization
 
-- [ ] T006 Add /health endpoint to backend/main.py returning {"status": "healthy"}
-- [ ] T007 Add /ready endpoint to backend/main.py with database connectivity check
-- [ ] T008 [P] Add health check endpoint to backend/tools/server.py for MCP Server
-- [ ] T009 Test health endpoints locally before containerization
+- [x] T006 Add /health endpoint to backend/main.py returning {"status": "healthy"}
+- [x] T007 Add /ready endpoint to backend/main.py with database connectivity check
+- [x] T008 [P] Add health check endpoint to backend/tools/server.py for MCP Server
+- [x] T009 Test health endpoints locally before containerization
 
 **Checkpoint**: Health endpoints ready - containerization can now begin
 
