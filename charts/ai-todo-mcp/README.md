@@ -52,6 +52,21 @@ helm upgrade ai-todo-mcp ./charts/ai-todo-mcp \
 helm uninstall ai-todo-mcp
 ```
 
+## Health Checks
+
+**Note**: The MCP server includes a `health_check()` tool (lines 672-696 in `backend/tools/server.py`) that validates database connectivity. However, this is registered as an **MCP tool** (accessible via MCP protocol), not as a simple HTTP endpoint.
+
+**Current Configuration**:
+- ❌ No Kubernetes liveness/readiness probes configured
+- ✅ This is acceptable since MCP is an internal-only service (ClusterIP)
+- ✅ Kubernetes will automatically restart crashed pods
+- ✅ Backend service calls MCP via ClusterIP, failures are handled gracefully
+
+**If you need HTTP health endpoints**:
+- MCP tools require MCP protocol headers (not simple GET requests)
+- For Kubernetes probes, you would need to add a FastAPI wrapper with `/health` endpoint
+- Current design prioritizes simplicity for internal-only service
+
 ## Troubleshooting
 
 ### Check pod status

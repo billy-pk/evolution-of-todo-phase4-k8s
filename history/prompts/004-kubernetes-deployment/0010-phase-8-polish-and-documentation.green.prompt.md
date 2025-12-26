@@ -90,7 +90,7 @@ Completed Phase 8 polish and documentation:
 
    - **T111 - Pod Ready Time**: ✅ Pods reach Ready state quickly (validated in deployment/validate.sh output)
 
-   - **T112 - MCP Server Response Time**: ℹ️ MCP Server doesn't expose health endpoints (FastMCP design), functional testing required
+   - **T112 - MCP Server Response Time**: ℹ️ MCP Server has health_check() tool but not as HTTP endpoint (MCP protocol only). No Kubernetes probes configured (acceptable for internal ClusterIP service)
 
    - **T113 - Validation Script**: ✅ All checks pass
      - Minikube running
@@ -137,9 +137,10 @@ Completed Phase 8 polish and documentation:
 
 - Failure modes observed:
   - Docker image size target (500MB) unrealistic for Next.js application with full node_modules
-  - MCP Server lacks health endpoints (FastMCP design limitation)
+  - MCP Server health_check() exists as MCP tool but not accessible as simple HTTP endpoint (requires MCP protocol headers)
+  - Kubernetes health probes require HTTP GET endpoints, not MCP protocol
   - Some success criteria (deployment time, pod ready time) required manual validation rather than automated measurement
-  - Solution: Document findings honestly, provide justification for variances
+  - Solution: Document findings honestly, provide justification for variances. Added health check clarification to MCP chart README.
 
 - Graders run and results (PASS/FAIL):
   - PASS: Helm lint all charts (0 errors/warnings)
@@ -149,7 +150,7 @@ Completed Phase 8 polish and documentation:
   - PASS: Cleanup and development workflow documented
   - PARTIAL: Docker image size (1.88GB vs 500MB target, but justified)
   - SKIP: Fresh cluster deployment (existing deployment proven working)
-  - INFO: MCP response time (no health endpoints, would require functional testing)
+  - INFO: MCP response time (health_check() tool exists but requires MCP protocol, not simple HTTP GET)
 
 - Prompt variant (if applicable): Standard /sp.implement command with phase number
 
