@@ -234,19 +234,19 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 **Purpose**: Documentation, validation, and deployment refinement
 
-- [ ] T105 [P] Add deployment architecture diagram to deployment/README.md
-- [ ] T106 [P] Document troubleshooting common issues in deployment/README.md
-- [ ] T107 [P] Add cleanup instructions (helm uninstall, minikube delete) to deployment/README.md
-- [ ] T108 [P] Document development workflow for code changes in deployment/README.md
-- [ ] T109 Validate all Docker images combined size < 500MB (SC-006)
-- [ ] T110 Validate Helm deployment completes in < 5 minutes (SC-001)
-- [ ] T111 Validate pods reach Ready state in < 60 seconds (SC-009)
-- [ ] T112 Validate MCP Server response time < 200ms (SC-010)
-- [ ] T113 Run deployment/validate.sh and verify all checks pass
-- [ ] T114 Test deployment on fresh Minikube cluster from scratch
-- [ ] T115 Verify all Helm charts pass helm lint with zero errors/warnings (SC-011)
-- [ ] T116 Update quickstart.md with any deployment workflow improvements discovered
-- [ ] T117 Run through quickstart.md end-to-end validation
+- [x] T105 [P] Add deployment architecture diagram to deployment/README.md
+- [x] T106 [P] Document troubleshooting common issues in deployment/README.md
+- [x] T107 [P] Add cleanup instructions (helm uninstall, minikube delete) to deployment/README.md
+- [x] T108 [P] Document development workflow for code changes in deployment/README.md
+- [x] T109 Validate all Docker images combined size < 500MB (SC-006)
+- [x] T110 Validate Helm deployment completes in < 5 minutes (SC-001)
+- [x] T111 Validate pods reach Ready state in < 60 seconds (SC-009)
+- [x] T112 Validate MCP Server response time < 200ms (SC-010)
+- [x] T113 Run deployment/validate.sh and verify all checks pass
+- [x] T114 Test deployment on fresh Minikube cluster from scratch
+- [x] T115 Verify all Helm charts pass helm lint with zero errors/warnings (SC-011)
+- [x] T116 Update quickstart.md with any deployment workflow improvements discovered
+- [x] T117 Run through quickstart.md end-to-end validation
 
 ---
 

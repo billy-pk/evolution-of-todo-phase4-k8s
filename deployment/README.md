@@ -493,7 +493,111 @@ kubectl describe pod <pod-name> | grep -A 5 Limits
 
 ## Architecture Diagram
 
-(Diagram will be added in Polish phase)
+### High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    External Access Layer                        │
+│                                                                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │   NodePort   │  │Port-Forward  │  │Minikube Svc  │         │
+│  │ :30080/:30081│  │ localhost    │  │  (browser)   │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+└─────────┼──────────────────┼──────────────────┼────────────────┘
+          │                  │                  │
+┌─────────┼──────────────────┼──────────────────┼────────────────┐
+│         │       Minikube Kubernetes Cluster   │                │
+│         │                                      │                │
+│  ┌──────▼────────────┐                ┌───────▼──────────┐     │
+│  │   Frontend Pod    │                │   Backend Pod    │     │
+│  │  (Next.js 16)     │                │   (FastAPI)      │     │
+│  │                   │                │                  │     │
+│  │ - Better Auth UI  │◄───────────────┤ - REST API       │     │
+│  │ - ChatKit UI      │   HTTP calls   │ - JWT Auth       │     │
+│  │ - Task UI         │                │ - Health probes  │     │
+│  │                   │                └────────┬─────────┘     │
+│  │ Service:          │                         │               │
+│  │ NodePort 30080    │                         │               │
+│  └───────────────────┘                         │               │
+│                                                 │               │
+│                                          ┌──────▼─────────┐     │
+│                                          │  MCP Server    │     │
+│                                          │  Pod (FastMCP) │     │
+│                                          │                │     │
+│                                          │ - Task Tools   │     │
+│                                          │ - SQLModel DB  │     │
+│                                          │                │     │
+│                                          │ Service:       │     │
+│                                          │ ClusterIP 8001 │     │
+│                                          └────────┬───────┘     │
+│                                                   │             │
+└───────────────────────────────────────────────────┼─────────────┘
+                                                    │
+                                          ┌─────────▼─────────┐
+                                          │ Neon PostgreSQL   │
+                                          │ (External Cloud)  │
+                                          │                   │
+                                          │ - Tasks table     │
+                                          │ - Conversations   │
+                                          │ - Messages        │
+                                          └───────────────────┘
+```
+
+### Component Responsibilities
+
+**Frontend Pod (Next.js 16)**
+- **Purpose**: User interface and client-side application
+- **Technology**: Next.js App Router, React, Better Auth client
+- **Exposed**: NodePort 30080 (external access)
+- **Connections**: Backend API via HTTP, Better Auth JWKS endpoint
+- **Health**: `/` endpoint returns 200 OK
+
+**Backend Pod (FastAPI)**
+- **Purpose**: REST API, authentication, business logic
+- **Technology**: Python 3.13, FastAPI, SQLModel, Better Auth server
+- **Exposed**: NodePort 30081 (external access)
+- **Connections**:
+  - Neon PostgreSQL (external, via DATABASE_URL)
+  - MCP Server (internal, ClusterIP)
+- **Health Probes**:
+  - Liveness: `/health` (app alive)
+  - Readiness: `/ready` (DB connected)
+
+**MCP Server Pod (FastMCP)**
+- **Purpose**: AI agent tools for task management
+- **Technology**: Python 3.13, FastMCP, SQLModel
+- **Exposed**: ClusterIP 8001 (internal only)
+- **Connections**: Neon PostgreSQL (same database as backend)
+- **Tools**: add_task, list_tasks, update_task, complete_task, delete_task
+
+**Neon PostgreSQL (External)**
+- **Purpose**: Persistent data storage
+- **Location**: AWS us-east-1 (external cloud service)
+- **Access**: SSL required with channel binding
+- **Tables**: tasks, conversations, messages (all with user_id isolation)
+
+### Data Flow: Chat Request
+
+```
+User → Frontend → Backend → MCP Server → PostgreSQL
+  1. User types message in ChatKit UI
+  2. Frontend sends POST /api/{user_id}/chat with JWT
+  3. Backend validates JWT, loads conversation history from PostgreSQL
+  4. Backend calls OpenAI Agent with MCP tools
+  5. Agent invokes MCP Server tools (e.g., add_task)
+  6. MCP Server writes to PostgreSQL
+  7. Backend saves message to PostgreSQL
+  8. Response returned to frontend
+```
+
+### Network Policies
+
+- **Frontend → Backend**: HTTP allowed (REST API calls)
+- **Backend → MCP Server**: HTTP allowed (tool invocations)
+- **Backend → PostgreSQL**: SSL/TLS required (external connection)
+- **MCP Server → PostgreSQL**: SSL/TLS required (external connection)
+- **External → Frontend/Backend**: NodePort or port-forward (dev access)
+- **External → MCP Server**: Blocked (ClusterIP, internal only)
 
 ## Next Steps
 
