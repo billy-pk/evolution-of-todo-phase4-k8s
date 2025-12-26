@@ -23,7 +23,7 @@ echo "✓ Minikube is running"
 echo ""
 
 # Load backend image
-echo "[1/2] Loading backend image into Minikube..."
+echo "[1/3] Loading backend image into Minikube..."
 minikube image load ai-todo-backend:latest
 
 if [ $? -eq 0 ]; then
@@ -34,8 +34,20 @@ else
 fi
 echo ""
 
+# Load MCP server image
+echo "[2/3] Loading MCP server image into Minikube..."
+minikube image load ai-todo-mcp:latest
+
+if [ $? -eq 0 ]; then
+  echo "✓ MCP server image loaded successfully"
+else
+  echo "✗ MCP server image load failed"
+  exit 1
+fi
+echo ""
+
 # Load frontend image
-echo "[2/2] Loading frontend image into Minikube..."
+echo "[3/3] Loading frontend image into Minikube..."
 minikube image load ai-todo-frontend:latest
 
 if [ $? -eq 0 ]; then

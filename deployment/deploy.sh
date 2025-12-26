@@ -49,15 +49,48 @@ if [ -z "$BETTER_AUTH_SECRET" ]; then
   echo ""
 fi
 
+# Deploy MCP Server (must be deployed first - backend depends on it)
+echo "=========================================="
+echo "[1/3] Deploying MCP Server"
+echo "=========================================="
+echo ""
+
+MCP_ARGS=(
+  ai-todo-mcp
+  "$REPO_ROOT/charts/ai-todo-mcp"
+)
+
+# Add environment variables if set
+if [ -n "$DATABASE_URL" ]; then
+  MCP_ARGS+=(--set "env.DATABASE_URL=$DATABASE_URL")
+fi
+
+helm upgrade --install "${MCP_ARGS[@]}"
+
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "✓ MCP Server deployed successfully"
+else
+  echo "✗ MCP Server deployment failed"
+  exit 1
+fi
+echo ""
+
+# Wait for MCP Server to be ready
+echo "Waiting for MCP Server to be ready..."
+kubectl wait --for=condition=ready pod -l app=ai-todo-mcp --timeout=60s
+echo ""
+
 # Deploy backend
 echo "=========================================="
-echo "[1/2] Deploying Backend"
+echo "[2/3] Deploying Backend"
 echo "=========================================="
 echo ""
 
 BACKEND_ARGS=(
   ai-todo-backend
   "$REPO_ROOT/charts/ai-todo-backend"
+  --set "env.MCP_SERVER_URL=http://ai-todo-mcp-service:8001"
 )
 
 # Add environment variables if set
@@ -86,7 +119,7 @@ echo ""
 
 # Deploy frontend
 echo "=========================================="
-echo "[2/2] Deploying Frontend"
+echo "[3/3] Deploying Frontend"
 echo "=========================================="
 echo ""
 
@@ -136,8 +169,9 @@ echo "Deployment Complete!"
 echo "=========================================="
 echo ""
 echo "Access the application:"
-echo "  Frontend: http://${MINIKUBE_IP}:30080"
-echo "  Backend:  http://${MINIKUBE_IP}:30081/health"
+echo "  Frontend:   http://${MINIKUBE_IP}:30080"
+echo "  Backend:    http://${MINIKUBE_IP}:30081/health"
+echo "  MCP Server: http://ai-todo-mcp-service:8001 (internal only)"
 echo ""
 echo "Next steps:"
 echo "  1. Validate deployment: ./deployment/validate.sh"

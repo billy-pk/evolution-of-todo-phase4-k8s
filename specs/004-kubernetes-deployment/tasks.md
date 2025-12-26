@@ -112,11 +112,11 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 - [x] T047 [P] [US1] Create deployment/deploy.sh with helm install commands for backend and frontend
 - [x] T048 [P] [US1] Create deployment/validate.sh to check pod status and run helm lint
 - [x] T049 [US1] Make all deployment scripts executable (chmod +x)
-- [ ] T050 [US1] Test full deployment workflow: minikube-setup.sh → build-images.sh → load-images.sh → deploy.sh
-- [ ] T051 [US1] Verify backend accessible at http://$(minikube ip):30081/health
-- [ ] T052 [US1] Verify frontend accessible at http://$(minikube ip):30080
-- [ ] T053 [US1] Test AI Todo chat functionality in Kubernetes environment
-- [ ] T054 [US1] Verify pod restart preserves conversation history (statelessness validation)
+- [x] T050 [US1] Test full deployment workflow: minikube-setup.sh → build-images.sh → load-images.sh → deploy.sh
+- [x] T051 [US1] Verify backend accessible at http://$(minikube ip):30081/health
+- [x] T052 [US1] Verify frontend accessible at http://$(minikube ip):30080
+- [x] T053 [US1] Test AI Todo chat functionality in Kubernetes environment
+- [x] T054 [US1] Verify pod restart preserves conversation history (statelessness validation)
 
 **Checkpoint**: Backend and Frontend deployed to Minikube with full Phase 3 feature parity
 
@@ -130,36 +130,36 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 ### MCP Server Containerization (User Story 2)
 
-- [ ] T055 [P] [US2] Create multi-stage Dockerfile for MCP Server in dockerfiles/mcp.Dockerfile
-- [ ] T056 [US2] Configure MCP Dockerfile with Python 3.13-slim base image
-- [ ] T057 [US2] Add builder stage with FastMCP dependency installation in dockerfiles/mcp.Dockerfile
-- [ ] T058 [US2] Add runtime stage copying .venv and tools/server.py in dockerfiles/mcp.Dockerfile
-- [ ] T059 [US2] Set CMD to python tools/server.py in dockerfiles/mcp.Dockerfile
-- [ ] T060 [US2] Build MCP image and validate size < 150MB
+- [x] T055 [P] [US2] Create multi-stage Dockerfile for MCP Server in dockerfiles/mcp.Dockerfile
+- [x] T056 [US2] Configure MCP Dockerfile with Python 3.13-slim base image
+- [x] T057 [US2] Add builder stage with FastMCP dependency installation in dockerfiles/mcp.Dockerfile
+- [x] T058 [US2] Add runtime stage copying .venv and tools/server.py in dockerfiles/mcp.Dockerfile
+- [x] T059 [US2] Set CMD to python tools/server.py in dockerfiles/mcp.Dockerfile
+- [x] T060 [US2] Build MCP image and validate size < 150MB
 
 ### MCP Server Helm Chart (User Story 2)
 
-- [ ] T061 [P] [US2] Create charts/ai-todo-mcp directory structure
-- [ ] T062 [P] [US2] Create charts/ai-todo-mcp/Chart.yaml with version 1.0.0
-- [ ] T063 [P] [US2] Create charts/ai-todo-mcp/values.yaml per contracts/helm-charts.md
-- [ ] T064 [P] [US2] Create charts/ai-todo-mcp/templates/deployment.yaml per contracts/kubernetes-resources.md
-- [ ] T065 [P] [US2] Create charts/ai-todo-mcp/templates/service.yaml for ClusterIP port 8001
-- [ ] T066 [P] [US2] Create charts/ai-todo-mcp/templates/secret.yaml template for DATABASE_URL
-- [ ] T067 [US2] Add resource limits (250m CPU, 256Mi memory) in charts/ai-todo-mcp/templates/deployment.yaml
-- [ ] T068 [US2] Create charts/ai-todo-mcp/README.md with installation instructions
-- [ ] T069 [US2] Run helm lint ./charts/ai-todo-mcp and fix all errors
+- [x] T061 [P] [US2] Create charts/ai-todo-mcp directory structure
+- [x] T062 [P] [US2] Create charts/ai-todo-mcp/Chart.yaml with version 1.0.0
+- [x] T063 [P] [US2] Create charts/ai-todo-mcp/values.yaml per contracts/helm-charts.md
+- [x] T064 [P] [US2] Create charts/ai-todo-mcp/templates/deployment.yaml per contracts/kubernetes-resources.md
+- [x] T065 [P] [US2] Create charts/ai-todo-mcp/templates/service.yaml for ClusterIP port 8001
+- [x] T066 [P] [US2] Create charts/ai-todo-mcp/templates/secret.yaml template for DATABASE_URL
+- [x] T067 [US2] Add resource limits (250m CPU, 256Mi memory) in charts/ai-todo-mcp/templates/deployment.yaml
+- [x] T068 [US2] Create charts/ai-todo-mcp/README.md with installation instructions
+- [x] T069 [US2] Run helm lint ./charts/ai-todo-mcp and fix all errors
 
 ### MCP Integration (User Story 2)
 
-- [ ] T070 [US2] Update deployment/build-images.sh to include MCP Server image build
-- [ ] T071 [US2] Update deployment/load-images.sh to load MCP Server image into Minikube
-- [ ] T072 [US2] Update deployment/deploy.sh to install ai-todo-mcp chart before backend
-- [ ] T073 [US2] Update backend Helm values to use internal DNS: http://ai-todo-mcp-service:8001
-- [ ] T074 [US2] Deploy MCP Server to Minikube
-- [ ] T075 [US2] Verify MCP Server service has ClusterIP (not NodePort)
-- [ ] T076 [US2] Test backend can communicate with MCP Server via internal Kubernetes DNS
-- [ ] T077 [US2] Test tool invocation through AI chat interface in Kubernetes
-- [ ] T078 [US2] Scale MCP Server to 2 replicas and verify both serve requests without state conflicts
+- [x] T070 [US2] Update deployment/build-images.sh to include MCP Server image build
+- [x] T071 [US2] Update deployment/load-images.sh to load MCP Server image into Minikube
+- [x] T072 [US2] Update deployment/deploy.sh to install ai-todo-mcp chart before backend
+- [x] T073 [US2] Update backend Helm values to use internal DNS: http://ai-todo-mcp-service:8001
+- [x] T074 [US2] Deploy MCP Server to Minikube
+- [x] T075 [US2] Verify MCP Server service has ClusterIP (not NodePort)
+- [x] T076 [US2] Test backend can communicate with MCP Server via internal Kubernetes DNS
+- [x] T077 [US2] Test tool invocation through AI chat interface in Kubernetes
+- [x] T078 [US2] Scale MCP Server to 2 replicas and verify both serve requests without state conflicts
 
 **Checkpoint**: MCP Server independently deployed and integrated with backend via Kubernetes networking
 
