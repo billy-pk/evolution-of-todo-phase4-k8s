@@ -1,0 +1,111 @@
+# Production environment values override file
+# Usage: helm upgrade --install <release> <chart> -f deployment/values-prod.yaml
+#
+# This file demonstrates how to customize deployments for production:
+# - Multiple replicas for high availability
+# - Higher resource limits for production load
+# - Production URLs with TLS
+# - LoadBalancer service type (if cloud provider supports it)
+
+# Backend configuration
+backend:
+  # Multiple replicas for high availability and load distribution
+  # Recommendation: Use 3+ for production
+  replicaCount: 3
+
+  # Production image with specific version tag (not 'latest')
+  image:
+    tag: "v1.0.0"  # Override with actual version
+    pullPolicy: IfNotPresent
+
+  # Higher resource limits for production workload
+  resources:
+    limits:
+      cpu: 1000m  # 1 CPU
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+  # Production service configuration
+  service:
+    # Use LoadBalancer in cloud environments (GCP, AWS, Azure)
+    # Minikube: Keep as NodePort
+    type: LoadBalancer  # or NodePort for Minikube
+
+  # Production environment variables
+  env:
+    # Production URLs with HTTPS
+    # Set via --set at deploy time:
+    # --set backend.env.BETTER_AUTH_ISSUER=https://app.example.com
+    # --set backend.env.BETTER_AUTH_JWKS_URL=https://app.example.com/api/auth/jwks
+    # --set backend.env.MCP_SERVER_URL=http://ai-todo-mcp-service:8001
+    BETTER_AUTH_ISSUER: "https://app.example.com"
+    BETTER_AUTH_JWKS_URL: "https://app.example.com/api/auth/jwks"
+
+  # Stricter readiness probe for production
+  readinessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 3
+    timeoutSeconds: 3
+    failureThreshold: 2
+
+# Frontend configuration
+frontend:
+  # Multiple replicas for high availability
+  replicaCount: 3
+
+  # Production image with specific version tag
+  image:
+    tag: "v1.0.0"  # Override with actual version
+    pullPolicy: IfNotPresent
+
+  # Higher resource limits for production
+  resources:
+    limits:
+      cpu: 1000m  # 1 CPU
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+  # Production service configuration
+  service:
+    type: LoadBalancer  # or NodePort for Minikube
+
+  # Production environment variables
+  env:
+    # Production URLs with HTTPS
+    # Set via --set at deploy time:
+    # --set frontend.env.NEXT_PUBLIC_API_URL=https://api.example.com
+    # --set frontend.env.BETTER_AUTH_URL=https://app.example.com
+    NEXT_PUBLIC_API_URL: "https://api.example.com"
+    BETTER_AUTH_URL: "https://app.example.com"
+
+# MCP Server configuration
+mcp:
+  # Multiple replicas for high availability (stateless server)
+  replicaCount: 2
+
+  # Production image with specific version tag
+  image:
+    tag: "v1.0.0"  # Override with actual version
+    pullPolicy: IfNotPresent
+
+  # Production resource limits
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+# Security Notes:
+# 1. Always use specific image tags in production (never 'latest')
+# 2. Enable TLS/HTTPS for all external endpoints
+# 3. Use secrets management (e.g., Kubernetes Secrets, HashiCorp Vault)
+# 4. Set DATABASE_URL, OPENAI_API_KEY, BETTER_AUTH_SECRET via --set at deploy time
+# 5. Consider using Ingress controller for external access instead of LoadBalancer
+# 6. Enable resource quotas and limit ranges at namespace level
+# 7. Implement pod disruption budgets for critical services

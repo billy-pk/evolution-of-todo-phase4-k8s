@@ -173,18 +173,18 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 ### Helm Values Parameterization (User Story 3)
 
-- [ ] T079 [P] [US3] Parameterize image tags in all charts (backend, MCP, frontend)
-- [ ] T080 [P] [US3] Parameterize replica counts in all deployment templates
-- [ ] T081 [P] [US3] Parameterize resource limits in all deployment templates
-- [ ] T082 [P] [US3] Parameterize environment variables in all charts
-- [ ] T083 [US3] Document all values in charts/*/values.yaml with inline comments
-- [ ] T084 [US3] Create example values override file deployment/values-dev.yaml
-- [ ] T085 [US3] Create example values override file deployment/values-prod.yaml
-- [ ] T086 [US3] Update deployment/deploy.sh to support --values flag for custom values files
-- [ ] T087 [US3] Test helm upgrade with modified replica count in values file
-- [ ] T088 [US3] Test helm upgrade with modified image tag in values file
-- [ ] T089 [US3] Test helm upgrade with --set flag for environment variable override
-- [ ] T090 [US3] Verify configuration changes take effect without redeploying entire chart
+- [x] T079 [P] [US3] Parameterize image tags in all charts (backend, MCP, frontend)
+- [x] T080 [P] [US3] Parameterize replica counts in all deployment templates
+- [x] T081 [P] [US3] Parameterize resource limits in all deployment templates
+- [x] T082 [P] [US3] Parameterize environment variables in all charts
+- [x] T083 [US3] Document all values in charts/*/values.yaml with inline comments
+- [x] T084 [US3] Create example values override file deployment/values-dev.yaml
+- [x] T085 [US3] Create example values override file deployment/values-prod.yaml
+- [x] T086 [US3] Update deployment/deploy.sh to support --values flag for custom values files
+- [x] T087 [US3] Test helm upgrade with modified replica count in values file
+- [x] T088 [US3] Test helm upgrade with modified image tag in values file
+- [x] T089 [US3] Test helm upgrade with --set flag for environment variable override
+- [x] T090 [US3] Verify configuration changes take effect without redeploying entire chart
 
 **Checkpoint**: All deployment configurations managed via Helm values with no hard-coded values in templates
 
@@ -198,13 +198,13 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 ### Statelessness Validation (User Story 4)
 
-- [ ] T091 [P] [US4] Create deployment/test-statelessness.sh script for automated validation
-- [ ] T092 [US4] Add test case: Create conversation via chat, delete backend pod, verify conversation persists
-- [ ] T093 [US4] Add test case: Create tasks via chat, delete all pods simultaneously, verify tasks remain
-- [ ] T094 [US4] Add test case: Delete MCP Server pod during tool invocation, verify new pod handles subsequent calls
-- [ ] T095 [US4] Verify pod recovery time < 10 seconds after deletion
-- [ ] T096 [US4] Verify no data loss after pod restarts
-- [ ] T097 [US4] Document statelessness validation in deployment/README.md
+- [x] T091 [P] [US4] Create deployment/test-statelessness.sh script for automated validation
+- [x] T092 [US4] Add test case: Create conversation via chat, delete backend pod, verify conversation persists
+- [x] T093 [US4] Add test case: Create tasks via chat, delete all pods simultaneously, verify tasks remain
+- [x] T094 [US4] Add test case: Delete MCP Server pod during tool invocation, verify new pod handles subsequent calls
+- [x] T095 [US4] Verify pod recovery time < 10 seconds after deletion
+- [x] T096 [US4] Verify no data loss after pod restarts
+- [x] T097 [US4] Document statelessness validation in deployment/README.md
 
 **Checkpoint**: Statelessness validated - system ready for horizontal scaling
 
@@ -218,13 +218,13 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 ### Port Forwarding and Access (User Story 5)
 
-- [ ] T098 [P] [US5] Document kubectl port-forward usage in deployment/README.md
-- [ ] T099 [P] [US5] Create deployment/port-forward.sh script to automate port forwarding
-- [ ] T100 [US5] Test backend access via kubectl port-forward svc/ai-todo-backend-service 8000:8000
-- [ ] T101 [US5] Test frontend access via kubectl port-forward svc/ai-todo-frontend-service 3000:3000
-- [ ] T102 [US5] Verify chat requests to localhost:8000/api/{user_id}/chat work identically to NodePort access
-- [ ] T103 [US5] Verify terminating port-forward does not affect running pods in cluster
-- [ ] T104 [US5] Document minikube service command as alternative access method in deployment/README.md
+- [x] T098 [P] [US5] Document kubectl port-forward usage in deployment/README.md
+- [x] T099 [P] [US5] Create deployment/port-forward.sh script to automate port forwarding
+- [x] T100 [US5] Test backend access via kubectl port-forward svc/ai-todo-backend-service 8000:8000
+- [x] T101 [US5] Test frontend access via kubectl port-forward svc/ai-todo-frontend-service 3000:3000
+- [x] T102 [US5] Verify chat requests to localhost:8000/api/{user_id}/chat work identically to NodePort access
+- [x] T103 [US5] Verify terminating port-forward does not affect running pods in cluster
+- [x] T104 [US5] Document minikube service command as alternative access method in deployment/README.md
 
 **Checkpoint**: Multiple access methods documented and validated
 

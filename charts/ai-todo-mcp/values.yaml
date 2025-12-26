@@ -2,25 +2,60 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Number of MCP server pod replicas
+# MCP server is stateless, can scale horizontally
+# Example: --set replicaCount=3
 replicaCount: 1
 
+# Docker image configuration
 image:
+  # Container image repository name
+  # Override for custom registries: --set image.repository=gcr.io/my-project/mcp
   repository: ai-todo-mcp
+
+  # Image tag (version)
+  # Use specific versions in production: --set image.tag=v1.2.3
   tag: latest
+
+  # Image pull policy
+  # Options: Always, IfNotPresent, Never
   pullPolicy: IfNotPresent
 
+# Kubernetes Service configuration
 service:
+  # Service type - ClusterIP for internal-only access
+  # MCP server should NOT be exposed externally
+  # Options: ClusterIP (internal), NodePort (external), LoadBalancer
   type: ClusterIP
+
+  # Internal service port (MCP server listens on this port)
   port: 8001
 
+# Resource limits and requests
+# MCP server is lightweight, needs minimal resources
 resources:
+  # Maximum resources the container can use
   limits:
+    # CPU limit (250 millicores = 0.25 CPU)
+    # Increase for high tool invocation volume: --set resources.limits.cpu=500m
     cpu: 250m
+
+    # Memory limit
+    # Increase if needed: --set resources.limits.memory=512Mi
     memory: 256Mi
+
+  # Guaranteed resources allocated to container
   requests:
+    # CPU request (125 millicores = 0.125 CPU)
     cpu: 125m
+
+    # Memory request
     memory: 128Mi
 
 # Environment variables (override with --set or values file)
+# Sensitive values should be set via --set at deploy time, not committed to Git
 env:
+  # PostgreSQL connection string (REQUIRED)
+  # Same database as backend - MCP tools read/write tasks
+  # Example: postgresql://user:pass@host:5432/db?sslmode=require
   DATABASE_URL: ""

@@ -2,29 +2,78 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Number of frontend pod replicas
+# Increase for high availability and load distribution
+# Example: --set replicaCount=2
 replicaCount: 1
 
+# Docker image configuration
 image:
+  # Container image repository name
+  # Override for custom registries: --set image.repository=gcr.io/my-project/frontend
   repository: ai-todo-frontend
+
+  # Image tag (version)
+  # Use specific versions in production: --set image.tag=v1.2.3
   tag: latest
+
+  # Image pull policy
+  # Options: Always, IfNotPresent, Never
   pullPolicy: IfNotPresent
 
+# Kubernetes Service configuration
 service:
+  # Service type - NodePort exposes on cluster node IP
+  # Options: ClusterIP (internal), NodePort (external), LoadBalancer
   type: NodePort
+
+  # Internal service port (frontend listens on this port)
   port: 3000
+
+  # External node port for NodePort service type
+  # Must be in range 30000-32767
   nodePort: 30080
 
+# Resource limits and requests
+# Prevents resource exhaustion and enables proper scheduling
 resources:
+  # Maximum resources the container can use
   limits:
+    # CPU limit (500 millicores = 0.5 CPU)
+    # Increase for CPU-intensive builds: --set resources.limits.cpu=1000m
     cpu: 500m
+
+    # Memory limit
+    # Increase if OOMKilled errors occur: --set resources.limits.memory=1Gi
     memory: 512Mi
+
+  # Guaranteed resources allocated to container
   requests:
+    # CPU request (250 millicores = 0.25 CPU)
     cpu: 250m
+
+    # Memory request
     memory: 256Mi
 
 # Environment variables (override with --set or values file)
+# Sensitive values should be set via --set at deploy time, not committed to Git
 env:
+  # Backend API URL for frontend to connect to
+  # Uses Minikube IP by default, override for production
+  # Example: --set env.NEXT_PUBLIC_API_URL=https://api.example.com
   NEXT_PUBLIC_API_URL: "http://192.168.49.2:30081"
+
+  # Better Auth secret for JWT signing (REQUIRED)
+  # Must match backend's BETTER_AUTH_SECRET
+  # Generate: openssl rand -base64 32
   BETTER_AUTH_SECRET: ""
+
+  # Better Auth URL for authentication endpoints
+  # Uses Minikube IP by default, override for production
+  # Example: --set env.BETTER_AUTH_URL=https://app.example.com
   BETTER_AUTH_URL: "http://localhost:30080"
+
+  # PostgreSQL connection string (REQUIRED for Better Auth)
+  # Same database as backend
+  # Example: postgresql://user:pass@host:5432/db?sslmode=require
   DATABASE_URL: ""

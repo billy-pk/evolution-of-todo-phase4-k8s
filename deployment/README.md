@@ -96,6 +96,36 @@ Deploys all Helm charts to Kubernetes cluster.
 ### validate.sh
 Validates deployment status and runs health checks.
 
+### test-statelessness.sh
+**Purpose**: Validates statelessness and cloud-native behavior of the AI Todo application.
+
+Tests that pod restarts do not cause data loss and recovery time meets targets (< 10 seconds).
+
+**Usage**:
+```bash
+# Run all statelessness validation tests
+./deployment/test-statelessness.sh
+```
+
+**Test Coverage**:
+1. **Backend Pod Restart**: Deletes backend pod, verifies new pod is created and ready
+2. **Simultaneous Pod Deletion**: Deletes all pods at once, verifies recovery without data loss
+3. **MCP Server Pod Recovery**: Tests MCP pod deletion during operation, confirms new pod serves requests
+4. **Pod Recovery Time**: Measures time from pod deletion to new pod ready (target < 10s)
+5. **Data Persistence**: Confirms conversations and tasks persist across pod restarts
+
+**Expected Results**:
+- All pods recover within 10 seconds of deletion
+- Readiness probes correctly detect pod health and database connectivity
+- Conversations and tasks persist in external PostgreSQL database
+- System continues serving requests during rolling updates
+
+**Notes**:
+- This validates the stateless design required for horizontal scaling
+- All application state is stored in external Neon PostgreSQL (no local state in pods)
+- Health probes (`/health`) check application liveness
+- Readiness probes (`/ready`) verify database connectivity before routing traffic
+
 ## Service Architecture
 
 ```
@@ -136,27 +166,66 @@ open http://$MINIKUBE_IP:30080
 curl http://$MINIKUBE_IP:30081/health
 ```
 
-### Method 2: Port Forwarding
+### Method 2: Port Forwarding (Recommended for Development)
 
+**Purpose**: Access services through localhost without NodePort networking. Ideal for development and debugging.
+
+**Usage**:
 ```bash
-# Forward backend port
+# Manual approach - Forward backend port
 kubectl port-forward svc/ai-todo-backend-service 8000:8000
 
-# Forward frontend port (in another terminal)
+# In another terminal - Forward frontend port
 kubectl port-forward svc/ai-todo-frontend-service 3000:3000
 
-# Access locally
+# Access locally (same as local development)
 open http://localhost:3000
 curl http://localhost:8000/health
 ```
 
-### Method 3: Minikube Service
-
+**Automated approach** (recommended):
 ```bash
-# Open service in browser
-minikube service ai-todo-frontend-service
-minikube service ai-todo-backend-service
+# Run the port-forward script (starts both services in background)
+./deployment/port-forward.sh
+
+# The script will display:
+# - Port forwarding status for each service
+# - Access URLs (http://localhost:3000, http://localhost:8000)
+# - Instructions for stopping port-forwards
+
+# Stop all port-forwards
+# Use Ctrl+C or:
+pkill -f "kubectl port-forward"
 ```
+
+**Notes**:
+- Port-forward is a client-side tunnel - terminating it does NOT affect pods
+- Each port-forward runs in a separate process (can run in background with &)
+- Use this method when NodePort access has networking issues (e.g., WSL2)
+- Identical API behavior to NodePort - chat, tasks, auth all work the same
+- Port-forwards are automatically terminated when kubectl context changes
+
+### Method 3: Minikube Service (Automatic Browser Launch)
+
+**Purpose**: Automatically open service in browser with Minikube-assigned URL.
+
+**Usage**:
+```bash
+# Open frontend in browser (auto-detects NodePort and Minikube IP)
+minikube service ai-todo-frontend-service
+
+# Open backend in browser
+minikube service ai-todo-backend-service
+
+# Get service URL without opening browser
+minikube service ai-todo-frontend-service --url
+```
+
+**Notes**:
+- Automatically handles Minikube IP detection and NodePort resolution
+- Opens default browser to the service
+- Works well for quick testing and demos
+- May not work in headless environments (use --url flag instead)
 
 ## Common Operations
 
@@ -300,6 +369,48 @@ kubectl describe svc ai-todo-backend-service
 kubectl run -it --rm debug --image=alpine --restart=Never -- sh
 # Then: wget -O- http://ai-todo-backend-service:8000/health
 ```
+
+### Port-Forward Not Working
+
+**Symptom**: Cannot connect to `localhost:8000` or `localhost:3000` even though port-forward is running
+
+**Causes**:
+- Port-forward tunnel is stale (process running but not routing traffic)
+- Pods are unhealthy
+- Wrong service name in port-forward command
+
+**Diagnosis Steps**:
+```bash
+# Step 1: Check if port-forward process is actually running
+lsof -i :8000 -i :3000 | grep kubectl
+
+# Step 2: Test pod health DIRECTLY (bypass port-forward)
+POD_NAME=$(kubectl get pods -l app=ai-todo-backend -o name | head -1)
+kubectl exec $POD_NAME -- python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/health').read().decode())"
+
+# Step 3: Check pod readiness
+kubectl get pods -l app=ai-todo-backend -o wide
+```
+
+**Solutions**:
+```bash
+# If Step 1 shows no kubectl process - port-forward died, restart it:
+./deployment/port-forward.sh start
+
+# If Step 1 shows kubectl but Step 2 fails - pod is unhealthy:
+kubectl logs <pod-name>  # Check application errors
+kubectl describe pod <pod-name>  # Check readiness probe failures
+
+# If Step 1 shows kubectl and Step 2 works - stale tunnel, restart:
+./deployment/port-forward.sh stop
+./deployment/port-forward.sh start
+
+# Or kill specific port-forward:
+pkill -f "kubectl port-forward.*backend"
+kubectl port-forward svc/ai-todo-backend-service 8000:8000 &
+```
+
+**Key Insight**: Always test pod health directly using `kubectl exec` before assuming port-forward issue. Port-forward is client-side only - it doesn't affect pod health.
 
 ## Cleanup
 

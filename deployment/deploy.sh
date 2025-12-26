@@ -1,8 +1,42 @@
 #!/bin/bash
 # Deploy AI Todo application to Kubernetes using Helm
-# This script installs backend and frontend Helm charts
+# This script installs backend, MCP, and frontend Helm charts
+#
+# Usage:
+#   ./deployment/deploy.sh                          # Deploy with default values
+#   ./deployment/deploy.sh -f values-dev.yaml       # Deploy with custom values file
+#   ./deployment/deploy.sh --values values-prod.yaml # Deploy with custom values file (long form)
 
 set -e  # Exit on error
+
+# Parse command-line arguments
+VALUES_FILE=""
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -f|--values)
+      VALUES_FILE="$2"
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: $0 [-f|--values <values-file>]"
+      echo ""
+      echo "Options:"
+      echo "  -f, --values FILE    Use custom Helm values file (e.g., deployment/values-dev.yaml)"
+      echo "  -h, --help           Show this help message"
+      echo ""
+      echo "Examples:"
+      echo "  $0                                    # Deploy with default values"
+      echo "  $0 -f deployment/values-dev.yaml     # Deploy with development values"
+      echo "  $0 --values deployment/values-prod.yaml  # Deploy with production values"
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1"
+      echo "Use -h or --help for usage information"
+      exit 1
+      ;;
+  esac
+done
 
 echo "=========================================="
 echo "Deploying AI Todo to Kubernetes"
@@ -11,6 +45,22 @@ echo ""
 
 # Get the repository root directory (parent of deployment/)
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Display values file being used
+if [ -n "$VALUES_FILE" ]; then
+  # Convert to absolute path if relative
+  if [[ "$VALUES_FILE" != /* ]]; then
+    VALUES_FILE="$REPO_ROOT/$VALUES_FILE"
+  fi
+
+  if [ ! -f "$VALUES_FILE" ]; then
+    echo "✗ Values file not found: $VALUES_FILE"
+    exit 1
+  fi
+
+  echo "Using custom values file: $VALUES_FILE"
+  echo ""
+fi
 
 # Check if Minikube is running
 if ! minikube status &> /dev/null; then
@@ -60,6 +110,11 @@ MCP_ARGS=(
   "$REPO_ROOT/charts/ai-todo-mcp"
 )
 
+# Add custom values file if provided
+if [ -n "$VALUES_FILE" ]; then
+  MCP_ARGS+=(--values "$VALUES_FILE")
+fi
+
 # Add environment variables if set
 if [ -n "$DATABASE_URL" ]; then
   MCP_ARGS+=(--set "env.DATABASE_URL=$DATABASE_URL")
@@ -92,6 +147,11 @@ BACKEND_ARGS=(
   "$REPO_ROOT/charts/ai-todo-backend"
   --set "env.MCP_SERVER_URL=http://ai-todo-mcp-service:8001"
 )
+
+# Add custom values file if provided
+if [ -n "$VALUES_FILE" ]; then
+  BACKEND_ARGS+=(--values "$VALUES_FILE")
+fi
 
 # Add environment variables if set
 if [ -n "$DATABASE_URL" ]; then
@@ -128,6 +188,11 @@ FRONTEND_ARGS=(
   "$REPO_ROOT/charts/ai-todo-frontend"
   --set "env.NEXT_PUBLIC_API_URL=http://${MINIKUBE_IP}:30081"
 )
+
+# Add custom values file if provided
+if [ -n "$VALUES_FILE" ]; then
+  FRONTEND_ARGS+=(--values "$VALUES_FILE")
+fi
 
 # Add environment variables if set
 if [ -n "$DATABASE_URL" ]; then
