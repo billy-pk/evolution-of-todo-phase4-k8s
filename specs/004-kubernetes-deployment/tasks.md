@@ -29,11 +29,11 @@ description: "Task list for Kubernetes Deployment with Minikube and Helm"
 
 **Purpose**: Create directory structure and deployment scripts framework
 
-- [ ] T001 Create dockerfiles directory at repository root
-- [ ] T002 Create charts directory at repository root
-- [ ] T003 Create deployment directory at repository root
-- [ ] T004 [P] Create deployment/README.md with deployment guide structure
-- [ ] T005 [P] Create deployment/minikube-setup.sh script for cluster initialization
+- [x] T001 Create dockerfiles directory at repository root
+- [x] T002 Create charts directory at repository root
+- [x] T003 Create deployment directory at repository root
+- [x] T004 [P] Create deployment/README.md with deployment guide structure
+- [x] T005 [P] Create deployment/minikube-setup.sh script for cluster initialization
 
 ---
 
