@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ai-todo-frontend
+description: AI Todo Next.js Frontend with ChatKit
+type: application
+version: 1.0.0
+appVersion: latest

@@ -96,6 +96,31 @@ async def health_check_api():
     return await health_check()
 
 
+@app.get("/ready")
+async def readiness_check():
+    """
+    T007: Readiness probe endpoint for Kubernetes.
+    Returns 200 OK if app is ready to serve traffic (database connected).
+    Returns 503 Service Unavailable if database is not ready.
+    """
+    from fastapi import HTTPException
+    from db import engine
+    from sqlmodel import text
+
+    try:
+        # Test database connection
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            result.fetchone()
+        return {"status": "ready", "database": "connected"}
+    except Exception as e:
+        logger.error(f"Readiness check failed: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Database not ready: {str(e)}"
+        )
+
+
 # T044: Include chat route (User Story 6 - Conversation History)
 # Chat endpoint already has JWTBearer in its dependencies
 try:

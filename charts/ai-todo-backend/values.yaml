@@ -1,0 +1,140 @@
+# Default values for ai-todo-backend Helm chart
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Number of backend pod replicas
+# Increase for high availability and load distribution
+# Example: --set replicaCount=3
+replicaCount: 1
+
+# Docker image configuration
+image:
+  # Container image repository name
+  # Override for custom registries: --set image.repository=gcr.io/my-project/backend
+  repository: ai-todo-backend
+
+  # Image tag (version)
+  # Use specific versions in production: --set image.tag=v1.2.3
+  tag: latest
+
+  # Image pull policy
+  # Options: Always, IfNotPresent, Never
+  pullPolicy: IfNotPresent
+
+# Kubernetes Service configuration
+service:
+  # Service type - NodePort exposes on cluster node IP
+  # Options: ClusterIP (internal), NodePort (external), LoadBalancer
+  type: NodePort
+
+  # Internal service port (backend listens on this port)
+  port: 8000
+
+  # External node port for NodePort service type
+  # Must be in range 30000-32767
+  nodePort: 30081
+
+# Resource limits and requests
+# Prevents resource exhaustion and enables proper scheduling
+resources:
+  # Maximum resources the container can use
+  limits:
+    # CPU limit (500 millicores = 0.5 CPU)
+    # Increase for CPU-intensive workloads: --set resources.limits.cpu=1000m
+    cpu: 500m
+
+    # Memory limit
+    # Increase if OOMKilled errors occur: --set resources.limits.memory=1Gi
+    memory: 512Mi
+
+  # Guaranteed resources allocated to container
+  requests:
+    # CPU request (250 millicores = 0.25 CPU)
+    cpu: 250m
+
+    # Memory request
+    memory: 256Mi
+
+# Environment variables (override with --set or values file)
+# Sensitive values should be set via --set at deploy time, not committed to Git
+env:
+  # PostgreSQL connection string (REQUIRED)
+  # Example: postgresql://user:pass@host:5432/db?sslmode=require
+  DATABASE_URL: ""
+
+  # OpenAI API key for AI chat functionality (REQUIRED)
+  # Example: sk-proj-...
+  OPENAI_API_KEY: ""
+
+  # MCP Server URL for tool invocations
+  # Uses Kubernetes DNS for service discovery
+  # Override for external MCP: --set env.MCP_SERVER_URL=https://external-mcp.example.com
+  MCP_SERVER_URL: "http://ai-todo-mcp-service:8001"
+
+  # Better Auth secret for JWT signing (REQUIRED)
+  # Must match frontend's BETTER_AUTH_SECRET
+  # Generate: openssl rand -base64 32
+  BETTER_AUTH_SECRET: ""
+
+  # Better Auth issuer URL
+  # Uses Kubernetes DNS, override for production: --set env.BETTER_AUTH_ISSUER=https://app.example.com
+  BETTER_AUTH_ISSUER: "http://ai-todo-frontend-service:3000"
+
+  # Better Auth JWKS URL for public key retrieval
+  BETTER_AUTH_JWKS_URL: "http://ai-todo-frontend-service:3000/api/auth/jwks"
+
+# Liveness probe configuration
+# Kubernetes restarts the pod if this fails
+livenessProbe:
+  httpGet:
+    # Health check endpoint
+    path: /health
+    port: 8000
+
+  # Wait time before first probe (allows startup)
+  initialDelaySeconds: 30
+
+  # Probe interval
+  periodSeconds: 10
+
+  # Probe timeout
+  timeoutSeconds: 5
+
+  # Number of failures before restart
+  failureThreshold: 3
+
+# Readiness probe configuration
+# Kubernetes removes pod from service if this fails
+readinessProbe:
+  httpGet:
+    # Readiness check endpoint (verifies DB connectivity)
+    path: /ready
+    port: 8000
+
+  # Wait time before first probe
+  initialDelaySeconds: 10
+
+  # Probe interval (more frequent than liveness)
+  periodSeconds: 5
+
+  # Probe timeout
+  timeoutSeconds: 5
+
+  # Number of failures before marking unready
+  failureThreshold: 3
+
+# Rolling update strategy
+# Controls how pods are replaced during updates
+strategy:
+  # RollingUpdate gradually replaces pods
+  # Alternative: Recreate (terminates all pods before creating new ones)
+  type: RollingUpdate
+
+  rollingUpdate:
+    # Maximum additional pods during update (surge)
+    # 1 = one extra pod can exist temporarily
+    maxSurge: 1
+
+    # Maximum unavailable pods during update
+    # 0 = ensures zero downtime (at least 1 pod always running)
+    maxUnavailable: 0

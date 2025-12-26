@@ -287,6 +287,8 @@ When making changes that affect chat functionality, restart all three servers to
 ## Active Technologies
 - Python 3.13 (backend), TypeScript/Next.js 16 (frontend) + FastAPI, Next.js App Router, Better Auth, OpenAI Agents SDK, FastMCP (003-remove-legacy-endpoints)
 - Neon PostgreSQL (no schema changes required) (003-remove-legacy-endpoints)
+- Python 3.13 (backend, MCP server), Node.js 20+ (frontend), Bash (deployment scripts) (004-kubernetes-deployment)
+- Neon PostgreSQL (external, not containerized), No persistent volumes required (004-kubernetes-deployment)
 
 ## Recent Changes
 - 003-remove-legacy-endpoints: Added Python 3.13 (backend), TypeScript/Next.js 16 (frontend) + FastAPI, Next.js App Router, Better Auth, OpenAI Agents SDK, FastMCP

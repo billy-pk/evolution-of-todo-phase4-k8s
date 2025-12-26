@@ -1,0 +1,65 @@
+# Development environment values override file
+# Usage: helm upgrade --install <release> <chart> -f deployment/values-dev.yaml
+#
+# This file demonstrates how to customize deployments for development:
+# - Lower resource limits (conserve resources on local machine)
+# - Single replica (simplifies debugging)
+# - Development-specific URLs (localhost, Minikube IP)
+
+# Backend configuration
+backend:
+  # Single replica for development (easier debugging)
+  replicaCount: 1
+
+  # Lower resource limits for local development
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Development environment variables
+  env:
+    # Use localhost for development (set at deploy time)
+    # MCP_SERVER_URL: "http://ai-todo-mcp-service:8001"  # Already default
+    BETTER_AUTH_ISSUER: "http://localhost:3000"
+    BETTER_AUTH_JWKS_URL: "http://localhost:3000/api/auth/jwks"
+
+# Frontend configuration
+frontend:
+  # Single replica for development
+  replicaCount: 1
+
+  # Lower resource limits for local development
+  resources:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Development environment variables
+  env:
+    # Use localhost URLs for development
+    NEXT_PUBLIC_API_URL: "http://localhost:8000"
+    BETTER_AUTH_URL: "http://localhost:3000"
+
+# MCP Server configuration
+mcp:
+  # Single replica for development
+  replicaCount: 1
+
+  # Lower resource limits for lightweight MCP server
+  resources:
+    limits:
+      cpu: 125m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+# Note: Sensitive values (DATABASE_URL, OPENAI_API_KEY, BETTER_AUTH_SECRET)
+# should still be provided via --set flags at deploy time, not in this file
