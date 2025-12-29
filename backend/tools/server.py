@@ -41,6 +41,8 @@ allowed_hosts_list = [
     "localhost:*",  # localhost with any port
     "127.0.0.1",  # Exact match for loopback (no port)
     "127.0.0.1:*",  # loopback with any port
+    "ai-todo-mcp-service",  # Kubernetes service DNS (no port)
+    "ai-todo-mcp-service:*",  # Kubernetes service DNS with any port
 ]
 
 # Add Render hostname if available (both with and without port)

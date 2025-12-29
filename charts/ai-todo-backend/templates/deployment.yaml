@@ -64,6 +64,11 @@ spec:
             configMapKeyRef:
               name: {{ .Chart.Name }}-config
               key: BETTER_AUTH_JWKS_URL
+        - name: BETTER_AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Chart.Name }}-config
+              key: BETTER_AUTH_URL
         resources:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}
