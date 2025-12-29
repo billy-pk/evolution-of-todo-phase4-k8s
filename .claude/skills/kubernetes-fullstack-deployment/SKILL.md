@@ -100,9 +100,15 @@ Frontend Pod → Backend Pod → MCP Pod
             Neon PostgreSQL (external)
 ```
 
+## Deployment Options
+
+- **Local Development:** Minikube (see above)
+- **Cloud Production:** Oracle Cloud Always Free tier (see [cloud-deployment.md](./cloud-deployment.md))
+
 ## Files
 
 - `SKILL.md` - This file (quick reference)
 - `reference.md` - Detailed commands and configurations
 - `troubleshooting.md` - Issue diagnosis and solutions
 - `workflow.md` - Step-by-step deployment procedures
+- `cloud-deployment.md` - Oracle Cloud deployment guide (Always Free tier)
