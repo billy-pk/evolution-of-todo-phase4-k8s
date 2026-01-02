@@ -1,14 +1,11 @@
+---
+name: kubernetes-fullstack-deployment
+description: Deploy and manage Next.js + FastAPI + MCP Server full-stack applications on Kubernetes (Minikube or cloud). Provides deployment workflows, troubleshooting for JWT/JWKS authentication errors, port-forwarding for WSL2/Windows, hot-reloading for development, and cloud deployment patterns. Use when: (1) Deploying multi-service applications to Kubernetes, (2) Setting up Better Auth JWT with JWKS validation between services, (3) Configuring development environments with port-forwards on WSL2/Windows, (4) Troubleshooting 401 Unauthorized or 421 Misdirected Request errors in service mesh, (5) Hot-reloading code changes in Minikube, (6) Deploying to Oracle Cloud Always Free tier or similar cloud platforms.
+---
+
 # Kubernetes Full-Stack Deployment
 
-Deploy and troubleshoot Next.js + FastAPI + MCP application on Minikube with Better Auth JWT validation.
-
-## When to Use
-
-- Deploying multi-service applications (frontend/backend/MCP) to Kubernetes
-- Setting up JWT authentication with JWKS between services
-- Configuring port-forwards for WSL2/Windows development
-- Troubleshooting 401/421 errors in Kubernetes service mesh
-- Hot-reloading code changes in Minikube
+Deploy and troubleshoot Next.js + FastAPI + MCP application on Kubernetes with Better Auth JWT validation.
 
 ## Prerequisites
 
@@ -86,7 +83,7 @@ allowed_hosts_list = [
 | Connection refused (3000) | Port-forward stopped | Restart with `--address 0.0.0.0` |
 | Database timeout | Old connections | Restart frontend pod |
 
-See [troubleshooting.md](./troubleshooting.md) for detailed solutions.
+See [troubleshooting.md](./references/troubleshooting.md) for detailed solutions.
 
 ## Architecture
 
@@ -103,12 +100,11 @@ Frontend Pod → Backend Pod → MCP Pod
 ## Deployment Options
 
 - **Local Development:** Minikube (see above)
-- **Cloud Production:** Oracle Cloud Always Free tier (see [cloud-deployment.md](./cloud-deployment.md))
+- **Cloud Production:** Oracle Cloud Always Free tier (see [cloud-deployment.md](./references/cloud-deployment.md))
 
-## Files
+## Reference Files
 
-- `SKILL.md` - This file (quick reference)
-- `reference.md` - Detailed commands and configurations
-- `troubleshooting.md` - Issue diagnosis and solutions
-- `workflow.md` - Step-by-step deployment procedures
-- `cloud-deployment.md` - Oracle Cloud deployment guide (Always Free tier)
+- **[reference.md](./references/reference.md)** - Detailed commands and configurations
+- **[troubleshooting.md](./references/troubleshooting.md)** - Issue diagnosis and solutions
+- **[workflow.md](./references/workflow.md)** - Step-by-step deployment procedures
+- **[cloud-deployment.md](./references/cloud-deployment.md)** - Oracle Cloud deployment guide (Always Free tier)
